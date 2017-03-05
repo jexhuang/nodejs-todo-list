@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h1 Welcome to todo list
+  div(id='app')
+    form(action='todo' method='post')
+      div
+        input(type='text' name='content')
+        button add
+    div
+        ul
+            each todo in todos
+                p
+                    li= todo.content
+                        form(action='todo-delete' method='get')
+                            input(type="hidden" name='_id' value=todo._id)
+                            button X
+            

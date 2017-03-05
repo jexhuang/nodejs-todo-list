@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  div(id='app')
+    form(action='login' method='post')
+      div
+        span account
+        input(type='text' name='id')
+      div
+        span password
+        input(type='text' name='password')
+      div
+        button submit
