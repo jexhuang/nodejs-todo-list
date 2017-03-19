@@ -1,0 +1,70 @@
+extends layout
+block content
+  h1 Welcome to todo list
+  #app
+    div
+        input(type='text' v-model='content')
+        button(@click='handleClick') add
+    div
+        ul(v-for='todo in todos')
+            li
+                {{todo.content}}
+                button(@click='deleteIt(todo._id)') X
+  script.
+    var vm = new Vue({
+        el:'#app',
+        data:{
+            content:'',
+            todos:[]
+        },
+        mounted:function(){
+            console.log('init');
+            this.render();       
+        },
+        methods:{
+            handleClick:function(){
+                fetch('/ajax/create', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body:JSON.stringify({
+                    content: vm.content
+                })
+                }).then(function(response) {
+                    return response.json();
+                }).then(function(json){
+                    if(json.success){
+                        vm.render();
+                    }
+                })
+            },
+            deleteIt:function(id){
+                fetch('/ajax/delete', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body:JSON.stringify({
+                    _id: id
+                })
+                }).then(function(response) {
+                    return response.json();
+                }).then(function(json){
+                    if(json.success){
+                        vm.render();
+                    }
+                })                
+            },
+            render:function(){
+                        fetch('/ajax/findall')
+                        .then(function(response) {
+                            return response.json();
+                        }).then(function(json) {
+                            vm.todos = json;
+                        }).catch(function(ex) {
+                          console.log('parsing failed', ex)
+                        })
+            }
+        }
+    });
